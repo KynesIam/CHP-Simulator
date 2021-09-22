@@ -7,7 +7,15 @@
 #include <cmath>
 #include <fstream>
 
+/*
+    Implements CHP unitaries with measurements and allows for determination of entanglement entropy between regions.
 
+
+    Reference:
+        "Improved Simulation of Stabilizer Circuits"
+        Scott Aaronson and Daniel Gottesman
+        https://arxiv.org/abs/quant-ph/0406196
+*/
 std::random_device rd;
 std::mt19937 gen(rd());
 
