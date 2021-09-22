@@ -1,10 +1,9 @@
 # CHP-Simulator
 Simulates clifford dynamics with measurements
+
 This code allows for the simulation of the clifford group unitaries which include CNOT gates, phase gates, Hadamard gates and swap gates.  
 
-The code also allows for measurements in the computational basis. 
-
-The entanglement entropy can be calculated with relative efficiency by finding the rank of a binary matrix.
+The code allows for measurements in the computational basis and the entanglement entropy can be calculated with relative efficiency by finding the rank of a binary matrix.
 
 This code is based off results from the paper ["Improved Simulation of Stabilizer Circuits"](https://arxiv.org/abs/quant-ph/0406196) by Scott Aaronson and Daniel Gottesman.
 
