@@ -7,7 +7,12 @@
         Scott Aaronson and Daniel Gottesman
         https://arxiv.org/abs/quant-ph/0406196
 */
-
+#include <iostream>
+#include <algorithm> 
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <cmath>
 
 
 
