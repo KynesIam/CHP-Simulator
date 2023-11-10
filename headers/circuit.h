@@ -42,7 +42,9 @@ class Chp_simulator
         {
             L = number_of_qubits;
             state = initial_state;
-            r = initial_r;
+            r = initial_r;//Stores phase information of stabilizers. for example, used to distinguish between |0> and |1> state 
+            //which are stabilized by Z and -Z respectively
+          
         }
         
         
