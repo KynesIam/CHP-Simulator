@@ -7,7 +7,7 @@
 #include <cmath>
 #include <fstream>
 #include "./headers/circuit.h"
-#include "./headers/entanglement.h"
+#include "./headers/entanglement_entropy.h"
 #include "./headers/state_initialization.h"
 /*
     Implements CHP unitaries with measurements and allows for determination of entanglement entropy between regions.
@@ -18,8 +18,7 @@
         Scott Aaronson and Daniel Gottesman
         https://arxiv.org/abs/quant-ph/0406196
 */
-std::random_device rd;
-std::mt19937 gen(rd());
+
 
 int main()
 {
