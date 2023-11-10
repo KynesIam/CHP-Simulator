@@ -6,7 +6,9 @@
 #include <random>
 #include <cmath>
 #include <fstream>
-
+#include "./headers/circuit.h"
+#include "./headers/entanglement.h"
+#include "./headers/state_initialization.h"
 /*
     Implements CHP unitaries with measurements and allows for determination of entanglement entropy between regions.
 
