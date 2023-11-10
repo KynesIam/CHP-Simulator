@@ -1,3 +1,21 @@
+//
+//
+//   The routine(s) in this file are a part of the
+//                     C++Lifford
+//   suite, developed 2021, and copyrighted
+//   to the authors: Cian Reeves and Sagar Vijay
+//   at the University of California, Santa Barbara
+//
+//
+//  If you use or modify any part of this routine
+//  the header should be kept and unmodified.
+//
+//  Implements CHP unitaries with measurements and allows for determination of entanglement entropy between regions
+//  and is based on the following publication, "Improved Simulation of Stabilizer Circuits", 
+//  Scott Aaronson and Daniel Gottesman https://arxiv.org/abs/quant-ph/0406196
+//
+//
+
 #include <iostream>
 #include <algorithm> 
 #include <stdio.h>
@@ -7,91 +25,11 @@
 #include <cmath>
 #include <fstream>
 
-/*
-    Implements CHP unitaries with measurements and allows for determination of entanglement entropy between regions.
 
-
-    Reference:
-        "Improved Simulation of Stabilizer Circuits"
-        Scott Aaronson and Daniel Gottesman
-        https://arxiv.org/abs/quant-ph/0406196
-*/
 std::random_device rd;
 std::mt19937 gen(rd());
 
-int entanglement_entropy(std::vector< std::vector<int> > stabilizers)
-{
-    /*finds the rank of the input array.  The entanglement entropy of a region A is then given by rank(A) - |A|, where A is an array of the stabilizers on region A
-    
-    
-    Arguments: 
-            stabilizers: The stabilizers of the desired state
-    */        
-    int n = stabilizers[0].size();
-    int rank = 0;
-    
-    for (int col = 0; col< n;col++)
-    {
-            int j = 0;
-            std::vector<int> rows(0);
-            while(j<stabilizers.size())
-            {
-                if (stabilizers[j][col] == 1)
-                {
-                    rows.insert(rows.end(), j);
-                }
-                j+=1;
-            }
-            if(rows.size()>=1)
-            {
-                for(int c = 1; c<rows.size(); c++)
-                {
-                    for(int k = 0; k<n;k++)
-                    {
-                        stabilizers[rows[c]][k] ^= stabilizers[rows[0]][k];
-                        
-                    }
-                    
-                }
-                stabilizers.erase(stabilizers.begin()+rows[0]);
-                rank+=1;
-            }
-    }
-    
-    for(int i = 0; i<stabilizers.size(); i++)
-    {
-        int sum = 0;
-        for(int j = 0; j<stabilizers[i].size();j++)
-        {
-            sum += stabilizers[i][j];
-            
-        }
-        if(sum>0)
-        {
-            rank+=1;
-        }
-    }
-    return rank;
-} 
-    
-    
-void initialise_state(std::vector<std::vector<int>> &state)
-{
-        /*Initializes state to be in the computational basis
-         
-         
-          Arguments:
-                    State: The tableau representation of the state
-        */
-        {
-            for(int i = 0; i<state[0].size(); ++i)
-            {
-                    state[i][i] =  1;
-            }
-        }
-}
-
-        
+  
 class Chp_simulator
 {
     
@@ -104,7 +42,9 @@ class Chp_simulator
         {
             L = number_of_qubits;
             state = initial_state;
-            r = initial_r;
+            r = initial_r;//Stores phase information of stabilizers. for example, used to distinguish between |0> and |1> state 
+            //which are stabilized by Z and -Z respectively
+          
         }
         
         
@@ -190,12 +130,14 @@ class Chp_simulator
             {
                 if(state[p][site] == 1)//State has X-stabiliser and therfore measurement outcome will be probabilistic
                 {
-                    //Following updates the remaining stabilizers ensuring state[p][site] is the only stabilizer with an X at the chosen site
+                    //Following updates the remaining stabilizers with column operations ensuring state[p][site] is 
+                    //the only stabilizer with an X at the chosen site
+                    
                     for(int i = 0; i<2*L;i++)
                     {
                         if(state[i][site] == 1 and i != p)
                         {
-                            row_sum(i,p);
+                            row_sum(i,p);//Adds columns mod 2 so that all but one column for the given X site has the X stabilizer 
                         }
                     }
                     
@@ -369,40 +311,3 @@ class Chp_simulator
             return region_A;
         }
 };
-
-int main()
-{
-    //Simple example circuit: Creates GHZ state then measures all 3 sites and calculates the entanglement entropy between site 12 and site 3.
-    //0:-----------X---M---
-    //             |
-    //1:-------X---|---M---
-    //         |   |
-    //2:---H---#---#---M---
-    
-    int L = 3;
-    std::vector<std::vector<int>> initial_state(2*L+1, std::vector<int>(2*L));
-    std::vector<int> initial_r(2*L+1);
-    initialise_state(initial_state);
-    
-    Chp_simulator circuit(L, initial_state,initial_r);
-    
-    circuit.hadamard(2);
-    circuit.cnot(2,1);
-    circuit.cnot(2,0);
-    
-    circuit.print_stabilizers();
-    std::cout<<"Entanglement entropy before measurement: "<<entanglement_entropy(circuit.get_A_stabilizers(0,2)) - 2<<"\n";
-    std::cout<<std::endl;
-    
-    circuit.measure_z(0);
-    circuit.measure_z(1);
-    circuit.measure_z(2);
-    
-    circuit.print_stabilizers();
-    std::cout<<"Entanglement entropy after measurement: "<<entanglement_entropy(circuit.get_A_stabilizers(0,2)) - 2<<"\n";
-    std::cout<<std::endl;
-
-    return 0;
-}
-
-
